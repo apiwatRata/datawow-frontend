@@ -20,7 +20,7 @@ export async function login(state: FormState, formData: FormData): Promise<FormS
 
     try{
      const response = await axios.post('/auth/login', JSON.stringify(validationFields.data))
-     await createSession(response.data?.accessToken);
+     await createSession(response.data);
      redirect("/home");
     }catch(err){
         if (err instanceof AxiosError) {

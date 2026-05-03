@@ -1,6 +1,7 @@
 "use server";
-import { cookies } from 'next/headers'
+import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
+import { jwtVerify, SignJWT } from 'jose';
 import axios from "../services/axiosInstance"; 
 
 export type Session = {
@@ -13,11 +14,19 @@ export type Session = {
     refreshToken: string;
 }
 
-export async function createSession ( token: string){
-    const expiredAt = new Date( Date.now() + 7 * 24 * 60 * 60 * 1000);
+const secretKey = process.env.SESSION_SECRET_KEY!;
+const encodedKey = new TextEncoder().encode(secretKey);
 
-    const cookie = await cookies();
-    cookie.set("session", token, {
+export async function createSession ( payload : Session){
+    const expiredAt = new Date( Date.now() + 7 * 24 * 60 * 60 * 1000);
+    const session = await new SignJWT(payload)
+    .setProtectedHeader({ alg: "HS256"})
+    .setIssuedAt()
+    .setExpirationTime("7d")
+    .sign(encodedKey);
+
+    const cookie = await cookies(); 
+    cookie.set("session", session, {
         httpOnly: true,
         secure: true,
         expires: expiredAt,
@@ -27,16 +36,22 @@ export async function createSession ( token: string){
 }
 
 export async function getSession() {
-
     const cookie = await cookies();
     const token = cookie.get("session")?.value;
     if(!token) redirect("/login");
 
     try{
-
+        const { payload } = await jwtVerify(token, encodedKey, {
+            algorithms: ["HS256"],
+        })
         return payload as Session;
     }catch(err){
         console.error("Failed to verify the session",err);
         redirect("/login");
     }
+}
+
+export async function deleteSession(){
+    const cookie = await cookies();
+    cookie.delete("session");
 }
