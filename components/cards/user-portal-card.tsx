@@ -3,7 +3,11 @@
 import { Card, CardHeader, CardFooter, CardContent, Button } from "@heroui/react";
 import { Icon } from "@iconify/react";
 
+import { useRouter } from 'next/navigation'
+
 export default function UserPortalCard() {
+  const router = useRouter()
+
     return (
     <Card className="w-full h-full max-w-md shadow-md primary">
       <CardHeader className="flex flex-col justify-center items-center gap-4 pt-6">
@@ -23,7 +27,8 @@ export default function UserPortalCard() {
 
       <CardFooter className="flex pb-6 justify-center">
         <Button
-          className="font-bold"
+          className="font-bold secondary"
+          type="button" onClick={() => router.push('/login')}
         >
           Enter Workspace <Icon icon="mdi:arrow-right" />
         </Button> 

@@ -2,8 +2,11 @@
 
 import { Card, CardHeader, CardFooter, CardContent, Button } from "@heroui/react";
 import { Icon } from "@iconify/react";
+import { useRouter } from 'next/navigation'
 
 export default function AdminPortalCard() {
+  const router = useRouter()
+  
     return (
     <Card className="w-full h-full max-w-md shadow-md secondary" 
     >
@@ -24,7 +27,8 @@ export default function AdminPortalCard() {
 
       <CardFooter className="flex justify-center pb-6">
         <Button
-          className="font-bold"
+          className="font-bold primary"
+          type="button" onClick={() => router.push('/login/admin')}
         >
           Enter Portal <Icon icon="mdi:arrow-right" />
         </Button> 
