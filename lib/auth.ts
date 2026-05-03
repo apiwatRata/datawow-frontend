@@ -2,9 +2,46 @@
 
 import axios from "../services/axiosInstance"; 
 import { FormState, LoginFormSchema } from "./types/auth-type";
+import { FormState as RegisterState, RegisterFormSchema} from "./types/register-type";
 import { redirect } from "next/navigation";
 import { AxiosError } from "axios";
 import { createSession, updateTokens } from "./session";
+
+export async function signUp(state: RegisterState, formData: FormData): Promise<RegisterState> {
+    const validationFields = RegisterFormSchema.safeParse({
+        email: formData.get("email"),
+        password: formData.get("password"),
+        confirmPassword :  formData.get("confirmPassword")
+    });
+    if(!validationFields.success){
+        return {
+            error: validationFields.error.flatten().fieldErrors
+        };
+    }
+
+    try{
+     const response = await axios.post('/users', {
+        email: validationFields.data.email,
+        password: validationFields.data.password
+     })
+     if(response.data?.status != 'success'){
+        return {
+            message: response.data?.message ?? "Registration failed."
+        };
+     }
+     return { success: true };
+    }catch(err){
+        if (err instanceof AxiosError) {
+            return {
+                message: err.response?.data.message ?? "Registration failed."
+            }
+        } else {
+            return {
+                message: "Internal Server Error."
+            }
+        }
+    }
+}
 
 export async function login(state: FormState, formData: FormData): Promise<FormState>{
     const validationFields = LoginFormSchema.safeParse({
@@ -45,7 +82,7 @@ export const refreshToken = async (oldRefreshToken: string) =>{
         await updateTokens( { accessToken, refreshToken });
 
         return accessToken;
-    }catch(err){
+    }catch {
         return null;
     }
 }

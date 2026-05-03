@@ -3,7 +3,7 @@
 import {Button, Description, FieldError, Form, Input, Label, TextField} from "@heroui/react";
 import SubmitButton from "@/components/submitButton";
 import { login } from "@/lib/auth";
-import { useFormState } from "react-dom";
+import { useActionState } from "react";
 
 interface LoginFormProps {
   type: "admin" | "user";
@@ -11,7 +11,7 @@ interface LoginFormProps {
 
 export default function LoginForm({ type }: LoginFormProps) {
 
-    const [state, action] = useFormState(login, undefined);
+    const [state, action] = useActionState(login, undefined);
 
     return (
         <Form className="space-y-6" action={action}>

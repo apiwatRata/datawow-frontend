@@ -4,7 +4,6 @@ import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { jwtVerify, SignJWT } from 'jose';
 import { Role } from './types/role-type';
-import axios from "../services/axiosInstance"; 
 
 export type Session = {
     user: {
