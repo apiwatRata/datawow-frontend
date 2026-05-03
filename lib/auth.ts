@@ -4,7 +4,7 @@ import axios from "../services/axiosInstance";
 import { FormState, LoginFormSchema } from "./types/auth-type";
 import { redirect } from "next/navigation";
 import { AxiosError } from "axios";
-import { createSession } from "./session";
+import { createSession, updateTokens } from "./session";
 
 export async function login(state: FormState, formData: FormData): Promise<FormState>{
     const validationFields = LoginFormSchema.safeParse({
@@ -32,5 +32,20 @@ export async function login(state: FormState, formData: FormData): Promise<FormS
                 message: "Internal Server Error."
             }
         }
+    }
+}
+
+export const refreshToken = async (oldRefreshToken: string) =>{
+    try{
+        const response = await axios.post('/auth/refresh', JSON.stringify({
+            refresh: oldRefreshToken
+        }))
+
+        const { accessToken, refreshToken }  = response.data;
+        await updateTokens( { accessToken, refreshToken });
+
+        return accessToken;
+    }catch(err){
+        return null;
     }
 }

@@ -1,14 +1,16 @@
 "use server";
+
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { jwtVerify, SignJWT } from 'jose';
+import { Role } from './types/role-type';
 import axios from "../services/axiosInstance"; 
 
 export type Session = {
     user: {
         id: string,
         email: string,
-        role: string,
+        role: Role,
     };
     accessToken: string;
     refreshToken: string;
@@ -54,4 +56,23 @@ export async function getSession() {
 export async function deleteSession(){
     const cookie = await cookies();
     cookie.delete("session");
+}
+
+export async function updateTokens({accessToken, refreshToken}: { accessToken: string; refreshToken: string;}){
+    const cookie = await cookies();
+    const session = cookie.get("session")?.value;
+    if(!session) return null;
+
+    const { payload } =  await jwtVerify<Session>(session, encodedKey)
+    if(!payload) throw new Error("Session not found");
+
+    const newPayload: Session = {
+        user: {
+            ...payload.user,
+        },
+        accessToken,
+        refreshToken
+    }
+
+    await createSession(newPayload);
 }
