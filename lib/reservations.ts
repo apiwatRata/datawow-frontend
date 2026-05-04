@@ -21,3 +21,12 @@ export const cancel = async (reservationId : string) =>{
         return null;
     }
 }
+
+export const getCancelledSeats = async () =>{
+    try{
+        const response = await axios.get(`reservations/cancelled`);
+        return response.data;
+    }catch(err) {
+        return null;
+    }
+}

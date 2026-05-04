@@ -10,3 +10,13 @@ export const getConcerts = async () =>{
         return null;
     }
 }
+
+export const getSeats = async () =>{
+    try{
+        const response = await axios.get('/concerts/seats');
+        return response.data;
+    }catch(err) {
+        return null;
+    }
+    
+}
