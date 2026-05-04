@@ -1,30 +1,17 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { jwtDecode } from 'jwt-decode';
-
-interface JwtPayload {
-  id: string;
-  role: string;
-  email: string;
-  exp?: number; 
-}
+import { getSession } from './lib/session';
 
 export async function proxy(req: NextRequest) {
-  const token = req.cookies.get('jwt')?.value;
-
-  if (!token) {
+  const session = await getSession();
+  if (!session) {
     return NextResponse.redirect(new URL('/', req.url));
   }
 
   try {
-    const decoded = jwtDecode<JwtPayload>(token);
-
-    if (decoded.exp && decoded.exp * 1000 < Date.now()) {
-      return NextResponse.redirect(new URL('/', req.url));
-    }
-
-    if (req.nextUrl.pathname.startsWith('/admin') && decoded.role !== 'admin') {
-      return NextResponse.redirect(new URL('/', req.url));
+    if (req.nextUrl.pathname.startsWith('/dashboard') && session.user?.role.toLowerCase() !== 'admin') {
+      return NextResponse.redirect(new URL('/home', req.url));
     }
 
     return NextResponse.next();

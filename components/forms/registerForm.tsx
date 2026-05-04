@@ -1,24 +1,38 @@
 "use client"
 
-import { FieldError, Form, Input, Label, TextField } from "@heroui/react";
+import { Alert, FieldError, Form, Input, Label, TextField, CloseButton } from "@heroui/react";
 import SubmitButton from "@/components/submitButton";
 import { signUp } from "@/lib/auth";
 import { useActionState } from "react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 export default function RegisterForm() {
     const router = useRouter();
     const [state, action] = useActionState(signUp, undefined);
-
+    const [showAlert, setShowAlert] = useState(false); 
+    
     useEffect(() => {
       if (state?.success) {
-        router.push("/");
+        setShowAlert(true);
+        const timer = setTimeout(() => {
+          router.push("/");
+        }, 2000);
+        return () => clearTimeout(timer);
       }
     }, [state, router]);
 
     return (
         <Form className="space-y-6" action={action}>
+            {showAlert && (
+              <Alert status="success">
+                <Alert.Indicator />
+                <Alert.Content>
+                <Alert.Title>Register successfully</Alert.Title>
+                </Alert.Content>
+                <CloseButton />
+            </Alert>
+            )}
             <TextField
                 className="block space-y-2 text-sm font-medium text-slate-700"
                 isRequired

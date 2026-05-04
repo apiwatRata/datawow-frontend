@@ -54,12 +54,13 @@ export async function login(state: FormState, formData: FormData): Promise<FormS
             error: validationFields.error.flatten().fieldErrors
         };
     }
-
+    console.log('validationFields.data',validationFields.data);
     try{
      const response = await axios.post('/auth/login', JSON.stringify(validationFields.data))
      await createSession(response.data);
-     redirect("/home");
+     return { success: true };
     }catch(err){
+        console.log('err',err);
         if (err instanceof AxiosError) {
             return {
                 message: err.response?.data.message
@@ -82,7 +83,7 @@ export const refreshToken = async (oldRefreshToken: string) =>{
         await updateTokens( { accessToken, refreshToken });
 
         return accessToken;
-    }catch {
+    }catch(err) {
         return null;
     }
 }
