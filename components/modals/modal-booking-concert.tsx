@@ -3,7 +3,7 @@
 import {Button, Modal} from "@heroui/react";
 
 export default function Default(props : any) {
-    const { action, handleConfirm, concert  } = props;
+  const { action, handleConfirm, concert  } = props;
   return (
     <Modal>
       <Button variant={action === "book"? "secondary" : "danger"}>{action === "book"? "Booking": "Cancel"}</Button>

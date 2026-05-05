@@ -5,7 +5,7 @@ import { Card, CardHeader, CardContent, CardFooter, Button, Modal, ModalHeader, 
 import { Icon } from "@iconify/react";
 import { getConcerts } from '@/lib/concerts';
 import { booking, cancel } from "@/lib/reservations";
-import ModalTest from '@/components/modals/modal-booking-concert';
+import EditConcertModal from '@/components/modals/modal-edit-concert';
 
 
 const PAGE_SIZE = 10;
@@ -110,7 +110,7 @@ export default function ConcertCardList() {
                 <Icon icon="mdi:account" width="18" height="18" />
                 <span>{concert.total_seats - concert.reserved_seats}</span>
               </div>
-              <ModalTest key={`${concert.id}-booking-modal`} action={concert.reservations.id? "cancel" : "book"} handleConfirm={handleConfirm} concert={concert} />
+              <EditConcertModal  key={`${concert.id}-modal`} concert={concert} />
             </CardFooter>
           </Card>
         </>

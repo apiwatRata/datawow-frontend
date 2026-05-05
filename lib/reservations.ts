@@ -30,3 +30,12 @@ export const getCancelledSeats = async () =>{
         return null;
     }
 }
+
+export const getReservationHistory = async (limit = 100, offset = 0)=>{
+    try{
+        const response = await axios.get(`reservations?limit=${limit}&offset=${offset}`);
+        return response.data;
+    }catch(err) {
+        return null;
+    }
+}

@@ -33,12 +33,25 @@ export default function Sidebar({ role = "User" }: SidebarProps) {
           fullWidth
           color="default"
           variant="flat"
-          onClick={() => router.push("/home")}
+          onClick={() => router.push(role === "User" ?"/home":"/dashboard")}
           className="justify-start rounded-xl px-3 py-3 text-slate-900 text-sm font-medium hover:bg-slate-100 transition-colors"
           startContent={<Icon icon="mdi:home" width="20" height="20" className="text-slate-600" />}
         >
           Home
         </Button>
+
+        {role === "Admin" ? 
+        (
+        <Button
+          fullWidth
+          color="default"
+          variant="flat"
+           onClick={() => router.push("/dashboard/history")}
+          className="justify-start rounded-xl px-3 py-3 text-slate-900 text-sm font-medium hover:bg-slate-100 transition-colors"
+        >
+          History
+        </Button> 
+      ): ""}
 
         <Button
           fullWidth

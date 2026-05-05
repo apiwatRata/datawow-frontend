@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { getSeats } from '@/lib/concerts';
 import { getCancelledSeats } from '@/lib/reservations';
 import TotalSeatCardList from '@/components/totalSeatCardList';
+import AdminConcertCardList from '@/components/cards/adminConcertCardList';
 export default function Dashboard() {
     const [total_seats, setTotalSeats] = useState<number>(0);
     const [reserve_seats, setReserveSeats] = useState<number>(0);
@@ -35,6 +36,9 @@ export default function Dashboard() {
                     reserve_seats={reserve_seats}
                     cancelled_seats={cancelled_seats}
                       />
+                </div>
+                <div className="mt-10 px-6">
+                    <AdminConcertCardList/>
                 </div>
             </div>
         </div>
